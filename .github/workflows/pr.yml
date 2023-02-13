@@ -47,9 +47,19 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ success() }}
     needs: deploy-preview
+    services:
+      selenium-chrome:
+        image: selenium/standalone-chrome:4.8.0-20230210
+        ports: 
+          - 4444:4444        
+        options: >-
+          --shm-size="2g"
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
       - name: Test
         env:          
           URL: ${{ needs.deploy-preview.outputs.aut-url }}
-        run: echo ${URL}
+        run: ./tests/run.sh
