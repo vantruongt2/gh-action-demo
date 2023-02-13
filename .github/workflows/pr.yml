@@ -26,8 +26,8 @@ jobs:
         with:
           url: ${{ steps.remove-deployment.outputs.deployment-url }}
           responseCode: 404
-          timeout: 5000
-          interval: 500
+          timeout: 120000
+          interval: 5000
       - name: Deploy
         uses: rossjrw/pr-preview-action@v1
         id: deployment
@@ -40,8 +40,8 @@ jobs:
         with:
           url: ${{ steps.deployment.outputs.deployment-url }}
           responseCode: 200
-          timeout: 5000
-          interval: 500
+          timeout: 120000
+          interval: 5000
 
   run-test:
     runs-on: ubuntu-latest
