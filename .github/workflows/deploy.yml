@@ -1,4 +1,4 @@
-name: name: CI-Deploy
+name: CI-Deploy
 
 on:
   # Runs on pushes targeting the default branch
