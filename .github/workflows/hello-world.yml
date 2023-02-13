@@ -1,0 +1,15 @@
+name: CI-Hello-World
+
+# Event Trigger
+on: [push]
+
+# Jobs
+jobs:
+  hello-world:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 1
+        run: echo "Welcome to Github Actions"
+      - name: Step 2
+        run: echo "Hello everyone"
+
