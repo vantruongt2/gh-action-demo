@@ -21,6 +21,8 @@ jobs:
 
   run-test:
     runs-on: ubuntu-latest
+    if: ${{ success() }}
+    needs: deploy-preview
     steps:
       - uses: actions/checkout@v3
       - name: Test
