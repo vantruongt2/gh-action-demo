@@ -1,20 +1,66 @@
-name: name: CI-Deploy
-
-on:  
+name: Deploy PR previews
+concurrency: preview-${{ github.ref }}
+on:
   pull_request:
-    branches:
-      - "main"
-
-concurrency: pr-${{ github.ref }}
-
-jobs:  
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+jobs:
   deploy-preview:
     runs-on: ubuntu-latest
+    outputs:
+      aut-url: ${{ steps.deployment.outputs.deployment-url }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Deploy preview
+      - uses: actions/checkout@v3
+      - name: Remove old deployment
         uses: rossjrw/pr-preview-action@v1
+        id: remove-deployment
         with:
-          source-dir: ./src
+          source-dir: src
+          preview-branch: gh-pages
+          umbrella-dir: preview
+          action: remove
+      - uses: nev7n/wait_for_response@v1
+        with:
+          url: ${{ steps.remove-deployment.outputs.deployment-url }}
+          responseCode: 404
+          timeout: 120000
+          interval: 5000
+      - name: Deploy
+        uses: rossjrw/pr-preview-action@v1
+        id: deployment
+        with:
+          source-dir: src
+          preview-branch: gh-pages
+          umbrella-dir: preview
+          action: deploy
+      - uses: nev7n/wait_for_response@v1
+        with:
+          url: ${{ steps.deployment.outputs.deployment-url }}
+          responseCode: 200
+          timeout: 120000
+          interval: 5000
+
+  run-test:
+    runs-on: ubuntu-latest
+    if: ${{ success() }}
+    needs: deploy-preview
+    services:
+      selenium-chrome:
+        image: selenium/standalone-chrome:4.8.0-20230210
+        ports: 
+          - 4444:4444        
+        options: >-
+          --shm-size="2g"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: pip install selenium==4.8.0
+      - name: Test
+        env:          
+          URL: ${{ needs.deploy-preview.outputs.aut-url }}
+        run: python ./tests/test.py
