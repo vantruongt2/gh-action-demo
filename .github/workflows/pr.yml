@@ -20,5 +20,5 @@ jobs:
       - name: Deploy preview
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          source-dir: src
+          folder: src
 
