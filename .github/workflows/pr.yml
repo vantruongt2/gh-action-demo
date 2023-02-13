@@ -11,10 +11,19 @@ jobs:
   deploy-preview:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3      
+      - uses: actions/checkout@v3
       - uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: src
           preview-branch: gh-pages
-          umbrella-dir: pr-preview
+          umbrella-dir: preview
           action: auto
+
+  run-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test
+        env:          
+          PR_NUMBER: ${{ github.event.number }}
+        run: echo ${PR_NUMBER}
