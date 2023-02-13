@@ -13,7 +13,7 @@ class TestPage(unittest.TestCase):
         )
 
     def test_content(self):
-        self.driver.get(url)
+        self.driver.get(self.url)
         ele = self.driver.find_element(By.ID, "wf")
         self.assertEqual(ele.text, 'Workflows')
 
