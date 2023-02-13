@@ -21,13 +21,13 @@ jobs:
           umbrella-dir: preview
           action: remove
       
-      - name: Deploy
-        uses: rossjrw/pr-preview-action@v1
-        with:
-          source-dir: src
-          preview-branch: gh-pages
-          umbrella-dir: preview
-          action: deploy
+      # - name: Deploy
+      #   uses: rossjrw/pr-preview-action@v1
+      #   with:
+      #     source-dir: src
+      #     preview-branch: gh-pages
+      #     umbrella-dir: preview
+      #     action: deploy
 
   run-test:
     runs-on: ubuntu-latest
